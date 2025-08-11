@@ -11,7 +11,11 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "")
 
 if not DATABASE_URL:
-    raise RuntimeError("DATABASE_URL is not set. Provide it via environment variable.")
+    raise RuntimeError("DATABASE_URL is not set.")
+
+# 🔧 Força usar o driver psycopg (psycopg3) com SQLAlchemy
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
 

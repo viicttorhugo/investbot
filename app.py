@@ -107,16 +107,16 @@ def admin_list():
         return {"error":"unauthorized"}, 401
     try:
         with engine.connect() as conn:
-    rows = conn.execute(text("""
-        SELECT
-          id,
-          email,
-          ativo,
-          COALESCE(created_at, criado_em) AS created_at
-        FROM licencas
-        ORDER BY id DESC
-        LIMIT 500
-    """)).mappings().all()
+            rows = conn.execute(text("""
+                SELECT
+                  id,
+                  email,
+                  ativo,
+                  COALESCE(created_at, criado_em) AS created_at
+                FROM licencas
+                ORDER BY id DESC
+                LIMIT 500
+            """)).mappings().all()
     
         items = []
         for r in rows:

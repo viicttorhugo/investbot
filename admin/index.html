@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel de Licenças • Invest Bot</title>
+  <link rel="stylesheet" href="/admin/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Invest Bot • Painel de Licenças</h1>
+    <div class="api-key-box">
+      <label>API Key:</label>
+      <input id="apiKey" type="password" placeholder="x-api-key" />
+      <button id="saveKey">Salvar</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Adicionar / Ativar Licença</h2>
+      <div class="row">
+        <input id="emailAdd" type="email" placeholder="email@dominio.com" />
+        <select id="ativoAdd">
+          <option value="1">Ativo</option>
+          <option value="0">Inativo</option>
+        </select>
+        <button id="btnAdd">Salvar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Lista de Licenças</h2>
+      <div class="row">
+        <button id="btnRefresh">Atualizar</button>
+        <input id="filter" placeholder="Filtrar por email..." />
+      </div>
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Criado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <small>© Invest Bot</small>
+  </footer>
+
+  <script src="/admin/app.js"></script>
+</body>
+</html>

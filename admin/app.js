@@ -60,16 +60,21 @@
     const email = (emailAdd.value||'').trim().toLowerCase();
     const ativo = Number(ativoAdd.value||1);
     if(!email){ alert('Informe um email.'); return; }
-    try{
-      const r = await fetch(`${API_BASE}/api/admin/licenses`, {
-        method: 'POST',
-        headers: headers(),
-        body: JSON.stringify({ email, ativo })
-      });
-      const j = await r.json();
-      if(j.status==='ok'){ emailAdd.value=''; await refresh(); }
-      else alert('Erro: '+(j.error||JSON.stringify(j)));
-    }catch(e){ alert('Erro: '+e); }
+      try{
+    const r = await fetch(`/api/admin/licenses`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ email, ativo })
+    });
+    const ctype = (r.headers.get('content-type') || '').toLowerCase();
+    const j = ctype.includes('application/json') ? await r.json() : { error: 'http', detail: await r.text() };
+    if (r.ok && j.status === 'ok') {
+      emailAdd.value=''; await refresh();
+    } else {
+      alert('Erro: ' + (j.error || 'desconhecido') + (j.detail ? `\nDetalhe: ${j.detail}` : ''));
+    }
+  } catch(e) {
+    alert('Erro: ' + (e.message||e));
   }
 
   async function action(type, email){

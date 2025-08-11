@@ -112,16 +112,39 @@ def admin_list():
 
 # ---- Admin: criar/ativar (upsert) ----
 @app.post("/api/admin/licenses")
+@app.post("/api/admin/licenses")
 def admin_add_or_activate():
     if not check_key(request):
         return {"error":"unauthorized"}, 401
     data = request.get_json(silent=True) or request.form
     email = (data.get("email") or "").strip().lower()
-    ativo = int(data.get("ativo", 1))
+    try:
+        ativo = int(data.get("ativo", 1))
+    except Exception:
+        return {"error":"ativo inválido"}, 400
     if not email:
         return {"error":"email requerido"}, 400
     try:
         with engine.begin() as conn:
+            # garante UNIQUE em email (caso tabela antiga não tenha)
+            conn.execute(text("""
+                DO $$
+                BEGIN
+                  IF NOT EXISTS (
+                    SELECT 1 FROM pg_indexes
+                    WHERE schemaname = 'public'
+                      AND indexname = 'licencas_email_key'
+                  ) THEN
+                    BEGIN
+                      ALTER TABLE licencas
+                      ADD CONSTRAINT licencas_email_key UNIQUE (email);
+                    EXCEPTION WHEN duplicate_table THEN
+                      -- ignora se já existir
+                      NULL;
+                    END;
+                  END IF;
+                END$$;
+            """));
             conn.execute(text("""
                 INSERT INTO licencas (email, ativo)
                 VALUES (:email, :ativo)

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS licencas (
+  id SERIAL PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  ativo INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_licencas_email ON licencas (lower(email));
